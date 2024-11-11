@@ -1,0 +1,150 @@
+// -*- mode: jsonc -*-
+// https://man.archlinux.org/man/waybar.5.en
+// default settings : https://github.com/Alexays/Waybar/blob/master/resources/config.jsonc
+{
+    "layer": "top", // Waybar at top layer
+    "position": "top", // Waybar position (top|bottom|left|right)
+    "mode" : "dock",
+    "exclusive" : true, // default : true
+    "passthrough" : false, // from wiki: should be false if mode dock. 
+    "gtk-layer-shell" : true, // parameter not found in arch wiki. 
+    "height": 0, // default : 30, // Waybar height (to be removed for auto height)
+    // "width": 1280, // Waybar width
+    // "spacing": 4, // default: 4, // Gaps between modules (4px)
+    // Choose the order of the modules
+    "modules-left": [
+        "clock",
+	"hyprland/workspaces"
+	// default: 
+	//"sway/workspaces",
+        //"sway/mode",
+        //"sway/scratchpad",
+        //"custom/media"
+    ],
+    "modules-center": [
+	"hyprland/window"
+	// default: 
+        // "sway/window"
+    ],
+    "modules-right": [
+        "network",
+        "cpu",
+        "memory",
+        "backlight",
+        "battery",
+        "pulseaudio",
+	//"pulseaudio#microphone",
+        "tray"
+        // apparently, it is backwards compatible with pipewire, 
+	// didnt find a good alternative for now. 
+	// also, can't find the source where i found this piece of information...
+        // "pulseaudio",
+	// "pulseaudio#microphone"
+	 // default:
+	    //    "mpd",
+	    //    "idle_inhibitor",
+	    //    "power-profiles-daemon",
+	    //    "temperature",
+	    //    "keyboard-state",
+	    //    "sway/language",
+	    //    "battery#bat2",
+	    //    "clock",
+	    //    "custom/power"
+    ],
+    
+    "hyprland/window" : {
+	    "format" : "󰣇  {}"
+    }, 
+
+    "hyprland/workspaces" : {
+	    "disable-scroll" : true ,
+	    "all-outputs" : true ,
+	    "on-click" : "activate"
+    },
+    
+    "tray": {
+        "icon-size": 13, // default commented out.
+        "spacing": 10
+    },
+	
+    // fully different from the default. 
+    // get default from /etc/xdg/????
+    "clock": {
+	"format": "{:%A   %B-%d-%Y    %I:%M:%S %p}",
+        "interval" : 1,
+	"rotate" : 0, 
+	"tooltip-format": "<tt>{calendar}</tt>",
+	"calendar" : {
+		"mode" : "month",
+		"mode-mon-col" : 3,
+		"on-scroll" : 1,
+		"on-click-right" : "mode",
+		"format" : {
+			"months" : "<span color='#a6adc8'><b>{}</b></span>",
+			"weekdays": "<span color='#a6adc8'><b>{}</b></span>",
+                	"today": "<span color='#a6adc8'><b>{}</b></span>",
+                	"days": "<span color='#555869'><b>{}</b></span>"
+		}
+	}
+    },
+    "backlight": {
+        "device": "intel_backlight", // default: acpi_video1
+        "format": "{icon} {percent}%", 
+        "format-icons": ["", "", "", "", "", "", "", "", ""],
+        "on-scroll-up": "brightnessctl set 1%+",
+        "on-scroll-down": "brightnessctl set 1%-",
+        "min-length": 6
+    },
+    
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 20 
+        },
+        "format": "{icon} {capacity}%",
+	"format-charging": "🗲 {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-alt": "{time} {icon}",
+        // "format-good": "", // An empty format will hide the module
+        // "format-full": "",
+	"format-icons": ["󰂃", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    },
+    
+    "memory": {
+        "states": {
+            "c": 90, // critical
+            "h": 60, // high
+            "m": 30 // medium
+        },
+        "interval": 10,
+        "format": "󰾆 {used}GB",
+        "format-m": "󰾅 {used}GB",
+        "format-h": "󰓅 {used}GB",
+        "format-c": " {used}GB",
+        "format-alt": "󰾆 {percentage}%",
+        "max-length": 10,
+        "tooltip": true,
+        "tooltip-format": "󰾆 {percentage}%\n {used:0.1f}GB/{total:0.1f}GB"
+    },
+    
+    "cpu": {
+        "interval": 10,
+        "format": "󰍛 {usage}%",
+        "format-alt": "{icon0}{icon1}{icon2}{icon3}",
+        "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+    },
+    
+    "network": {
+        // "interface": "wlp2*", // (Optional) To force the use of this interface
+        "tooltip": true,
+        "format-wifi": "  {essid}",
+        "format-ethernet": "󰈀 ",
+        "tooltip-format": "Network: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
+        "format-linked": "󰈀 {ifname} (No IP)",
+        "format-disconnected": "󰖪 ",
+        "tooltip-format-disconnected": "Disconnected",
+        "format-alt": "<span foreground='#99ffdd'> {bandwidthDownBytes}</span> <span foreground='#ffcc66'> {bandwidthUpBytes}</span>",
+        "interval": 2
+    }
+}
