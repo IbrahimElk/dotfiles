@@ -1,0 +1,7 @@
+-- -- Set the comment string for racket files to ;; instead of |# #|
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "racket",
+--   callback = function()
+--     vim.opt_local.commentstring = ";; %s"
+--   end,
+-- })
