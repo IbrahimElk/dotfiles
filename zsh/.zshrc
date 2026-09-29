@@ -1,11 +1,13 @@
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="gozilla"
- 
+
 # -----------------------------------------------------------
 # tools
 # -----------------------------------------------------------
 
-alias sd='cd $(find * -type d | fzf)'
+alias sd='cd $(fd --type d --exclude .git| fzf)'
+alias sf='cd $(fd --type f --exclude .git| fzf)'
+alias tmx="tmux -L local"
 
 # -----------------------------------------------------------
 # plugins 
@@ -28,9 +30,17 @@ bindkey "^[n" vi-down-line-or-history
 # remap alt+k to alt+p
 bindkey "^[p" vi-up-line-or-history
 
+# handle issue of vi-mode not using 
+# system clipboard
+source ~/.zclipboard
+
 # -----------------------------------------------------------
 # environment variables and PATH
 # -----------------------------------------------------------
+
+# shortcuts
+export PROJECTS="$HOME/projects/"
+export OPT="$HOME/opt/"
 
 # nvm env variables
 export NVM_DIR="$HOME/.nvm"
@@ -47,6 +57,9 @@ export PATH="$PATH:/home/ibrahim/.local/bin"
 export PATH="$PATH:/home/ibrahim/.local/bin"
 [ -f "/home/ibrahim/.ghcup/env" ] && . "/home/ibrahim/.ghcup/env" # ghcup-env
 
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"
 
 # BEGIN opam configuration
 # This is useful if you're using opam as it adds:
@@ -56,3 +69,5 @@ export PATH="$PATH:/home/ibrahim/.local/bin"
 [[ ! -r '/home/ibrahim/.opam/opam-init/init.zsh' ]] || source '/home/ibrahim/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
 . "/home/ibrahim/.deno/env"
+
+. "$HOME/.cargo/env"
