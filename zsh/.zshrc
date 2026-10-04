@@ -42,6 +42,8 @@ source ~/.zclipboard
 export PROJECTS="$HOME/projects/"
 export OPT="$HOME/opt/"
 
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
 # nvm env variables
 export NVM_DIR="$HOME/.nvm"
 # this loads nvm
@@ -71,3 +73,4 @@ eval "$(pyenv init - zsh)"
 . "/home/ibrahim/.deno/env"
 
 . "$HOME/.cargo/env"
+
