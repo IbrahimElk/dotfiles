@@ -3,6 +3,8 @@
 " CLIPBOARD section. Install plugins with :PlugInstall
 
 set nocompatible
+set t_RB= t_RF= t_RV= t_u7= t_RC= t_RS=
+set t_fe= t_fd=
 let mapleader = " "
 let maplocalleader = " "
 
@@ -60,20 +62,41 @@ set scrolloff=10
 set spelllang=en_gb,nl,fr nospell
 set hlsearch incsearch
 set completeopt=menuone,noinsert,noselect
-set termguicolors
 " no equivalent in Vim: inccommand=split (live :s preview)
 
 let s:undodir = expand('~/.vim/undo')
 if !isdirectory(s:undodir) | call mkdir(s:undodir, 'p', 0700) | endif
 let &undodir = s:undodir . '//'
 
+if &term =~# '^\(tmux\|screen\)'
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+endif
+set termguicolors
+
 " --------------------------------------------------------------- clipboard ---
-" Vim only talks to the clipboard through X11 (needs a +clipboard build such as
-" vim-gtk3/gvim, running via XWayland on Hyprland). Otherwise fall back to wl-copy.
+" Yank -> system clipboard via OSC 52. Works locally and over ssh/tmux as long
+" as the terminal emulator supports OSC 52 (kitty, foot, alacritty, wezterm, ...).
+
+function! s:osc52_copy(text) abort
+  let l:b64 = substitute(system('base64', a:text), '\n', '', 'g')
+  let l:seq = "\e]52;c;" . l:b64 . "\x07"
+  if exists('*echoraw')
+    call echoraw(l:seq)
+  else
+    call writefile([l:seq], '/dev/tty', 'b')
+  endif
+endfunction
+
 if has('clipboard')
   set clipboard=unnamedplus
-elseif executable('wl-copy')
-  autocmd TextYankPost * if v:event.operator ==# 'y' | call system('wl-copy', @0) | endif
+else
+  augroup user_osc52
+    autocmd!
+    autocmd TextYankPost *
+          \ call s:osc52_copy(join(v:event.regcontents, "\n")
+          \     . (v:event.regtype ==# 'V' ? "\n" : ''))
+  augroup END
 endif
 
 " ------------------------------------------------------------- colorscheme ---
